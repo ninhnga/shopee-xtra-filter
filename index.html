@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ee4d2d">
+<title>Shopee XTRA Filter iPhone</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+:root{--orange:#ee4d2d;--green:#16805b;--bg:#f6f6f6;--card:#fff;--text:#202020;--muted:#777;--line:#e6e6e6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);padding-bottom:90px}
+header{position:sticky;top:0;z-index:10;background:var(--orange);color:#fff;padding:calc(12px + env(safe-area-inset-top)) 16px 14px;box-shadow:0 2px 8px #0002}
+h1{font-size:20px;margin:0 0 5px}.sub{font-size:13px;opacity:.9}
+main{max-width:720px;margin:auto;padding:14px}
+.card{background:var(--card);border-radius:14px;padding:15px;margin:0 0 12px;box-shadow:0 1px 4px #00000012}
+h2{font-size:17px;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
+input,select,button,textarea{font:inherit}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;outline:none}input:focus,select:focus{border-color:var(--orange)}
+button{border:0;border-radius:10px;padding:11px 14px;font-weight:600;cursor:pointer}
+.primary{background:var(--orange);color:#fff}.secondary{background:#f2f2f2}.green{background:#16805b;color:#fff}.danger{background:#fff0ed;color:#c9361d}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.row .fit{flex:0 0 auto}
+.drop{border:2px dashed #ddd;border-radius:12px;padding:18px;text-align:center;background:#fafafa}
+.drop input{display:none}.drop strong{display:block;margin-bottom:4px}.hint{font-size:12px;color:var(--muted);line-height:1.45}
+.preview{display:none;margin-top:10px;max-height:280px;width:100%;object-fit:contain;border-radius:10px;background:#eee}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.badge{font-size:12px;border-radius:999px;padding:5px 8px;background:#f1f1f1}.badge.ok{background:#e7f7ef;color:#11734f}.badge.no{background:#fff0ed;color:#b52e19}
+.result{display:grid;grid-template-columns:86px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.thumb{width:86px;height:86px;border-radius:10px;object-fit:cover;background:#eee}.title{font-weight:650;font-size:14px;line-height:1.3}.meta{font-size:12px;color:#666;margin-top:4px}.link{font-size:12px;color:#d84324;word-break:break-all;margin-top:5px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#fafafa;border-radius:10px;padding:10px;text-align:center}.stat b{display:block;font-size:19px}.stat span{font-size:11px;color:#777}
+.notice{font-size:12px;background:#fff7e6;border:1px solid #ffe1a6;padding:10px;border-radius:10px;line-height:1.45}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom));display:flex;gap:8px;z-index:20}.footerBtn{flex:1}
+small.k{color:#999}
+@media(max-width:390px){.grid{grid-template-columns:1fr}.result{grid-template-columns:70px 1fr}.thumb{width:70px;height:70px}}
+</style>
+</head>
+<body>
+<header><h1>🟠 Shopee XTRA Filter</h1><div class="sub">Lọc sản phẩm: Hoa hồng XTRA ≥ 2% • Video 0–2</div></header>
+<main>
+<section class="card">
+<h2>1. Nhập sản phẩm</h2>
+<div class="grid">
+<div><label>Link sản phẩm Shopee</label><input id="url" placeholder="Dán link sản phẩm..."></div>
+<div><label>Tên sản phẩm (tuỳ chọn)</label><input id="name" placeholder="Ví dụ: Combo 5 serum"></div>
+</div>
+<div class="grid" style="margin-top:10px">
+<div><label>Hoa hồng XTRA (%)</label><input id="comm" inputmode="decimal" placeholder="Ví dụ 10"></div>
+<div><label>Số video nhà sáng tạo</label><select id="videos"><option value="">Chưa biết</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+</div>
+<div class="drop" style="margin-top:12px">
+<label for="shot"><strong>📷 Chụp màn hình trang sản phẩm để OCR</strong><span class="hint">Ảnh giống ảnh bạn gửi: có “HOA HỒNG XTRA 10%” và mục “Video về sản phẩm”.</span></label>
+<input id="shot" type="file" accept="image/*">
+<img id="preview" class="preview">
+</div>
+<div class="row" style="margin-top:10px"><button class="primary" id="ocr">🔎 OCR & tự lọc</button><button class="secondary fit" id="add">＋ Thêm</button></div>
+<div id="ocrStatus" class="hint" style="margin-top:8px"></div>
+</section>
+
+<section class="card">
+<h2>2. Tiêu chí lọc</h2>
+<div class="grid">
+<div><label>XTRA tối thiểu (%)</label><input id="minComm" value="2" inputmode="decimal"></div>
+<div><label>Video tối đa</label><select id="maxVideo"><option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
+</div>
+<div class="badges"><span class="badge ok">✓ XTRA ≥ 2%</span><span class="badge ok">✓ Video 0–2</span><span class="badge">Không cần đăng nhập tool</span></div>
+</section>
+
+<section class="card">
+<h2>3. Kết quả <small class="k" id="count"></small></h2>
+<div class="stats"><div class="stat"><b id="total">0</b><span>Tổng</span></div><div class="stat"><b id="passed">0</b><span>Đạt</span></div><div class="stat"><b id="rejected">0</b><span>Loại</span></div></div>
+<div id="results" style="margin-top:10px"></div>
+</section>
+
+<section class="card">
+<h2>⚠️ Lưu ý quan trọng trên iPhone</h2>
+<div class="notice">Shopee app là ứng dụng native nên một web/PWA không thể tự đọc dữ liệu bên trong app hoặc tự bấm mở từng sản phẩm. Tool này vì vậy dùng <b>ảnh chụp + OCR</b> để lọc chính xác theo dữ liệu bạn nhìn thấy. Link và ảnh sản phẩm được bạn nhập/chọn sẽ được giữ trên máy.</div>
+<div class="hint" style="margin-top:8px">Nếu muốn tự động 100% từ màn hình Affiliate Shopee mà không cần chụp ảnh, cần một giải pháp riêng có quyền truy cập dữ liệu Shopee (ví dụ API/extension hoặc máy chủ trung gian). Không nên nhập mật khẩu Shopee vào tool này.</div>
+</section>
+</main>
+<footer><button class="secondary footerBtn" id="export">⬇️ Xuất CSV</button><button class="danger footerBtn" id="clear">🗑 Xoá dữ liệu</button></footer>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let items=JSON.parse(localStorage.getItem('sxtra_items')||'[]');
+let currentImage='';
+$('shot').addEventListener('change',e=>{
+ const f=e.target.files[0]; if(!f)return;
+ const r=new FileReader(); r.onload=()=>{currentImage=r.result;$('preview').src=currentImage;$('preview').style.display='block'}; r.readAsDataURL(f);
+});
+function num(v){if(v==null)return NaN; let s=String(v).replace(',','.'); let m=s.match(/(\\d+(?:\\.\\d+)?)/);return m?parseFloat(m[1]):NaN}
+function parseCommission(text){
+ const t=text.replace(/\\s+/g,' ').toLowerCase();
+ const ms=[...t.matchAll(/(?:hoa h[oô]ng[^%]{0,60}xtra|xtra[^%]{0,60}hoa h[oô]ng|hoa h[oô]ng xtra)[^%]{0,30}(\\d+(?:[\\.,]\\d+)?)\\s*%/gi)];
+ if(ms.length)return num(ms[ms.length-1][1]);
+ const p=[...t.matchAll(/xtra[^%]{0,30}(\\d+(?:[\\.,]\\d+)?)\\s*%/gi)]; return p.length?num(p[p.length-1][1]):NaN;
+}
+function detectVideoByText(text){
+ let t=text.toLowerCase().replace(/\\s+/g,' ');
+ let m=t.match(/(?:video[^\\d]{0,80})(\\d+)\\s*video/); if(m)return parseInt(m[1]);
+ m=t.match(/(\\d+)\\s*video/); if(m)return parseInt(m[1]);
+ return NaN;
+}
+async function ocr(){
+ const f=$('shot').files[0]; if(!f){$('ocrStatus').textContent='Hãy chọn ảnh chụp sản phẩm trước.';return}
+ $('ocrStatus').textContent='⏳ Đang đọc ảnh…';
+ try{
+   const {data}=await Tesseract.recognize(f,'eng+vie',{logger:m=>{if(m.status==='recognizing text')$('ocrStatus').textContent='⏳ OCR '+Math.round((m.progress||0)*100)+'%'}}});
+   const text=data.text||'';
+   const c=parseCommission(text);
+   const v=detectVideoByText(text);
+   if(Number.isFinite(c)) $('comm').value=c;
+   if(Number.isFinite(v)) $('videos').value=String(v);
+   else $('videos').value='';
+   $('ocrStatus').textContent=`✓ Đã đọc. XTRA: ${Number.isFinite(c)?c+'%':'chưa thấy'} • Video: ${Number.isFinite(v)?v:'chưa xác định'}. Nếu video chưa xác định, chọn 0/1/2 thủ công rồi bấm Thêm.`;
+ }catch(err){$('ocrStatus').textContent='OCR lỗi: '+err.message}
+}
+function passes(x){
+ const mc=num($('minComm').value), mv=parseInt($('maxVideo').value);
+ return Number.isFinite(x.comm)&&Number.isFinite(x.videos)&&x.comm>=mc&&x.videos>=0&&x.videos<=mv;
+}
+function add(){
+ const x={id:Date.now(),name:$('name').value.trim()||'Sản phẩm Shopee',url:$('url').value.trim(),comm:num($('comm').value),videos:parseInt($('videos').value),image:currentImage||''};
+ if(!Number.isFinite(x.comm)||!Number.isFinite(x.videos)){alert('Cần có % XTRA và số video (0–2).');return}
+ items.unshift(x);save();render();
+ $('name').value='';$('url').value='';$('comm').value='';$('videos').value='';$('shot').value='';currentImage='';$('preview').style.display='none';$('ocrStatus').textContent='';
+}
+function save(){localStorage.setItem('sxtra_items',JSON.stringify(items))}
+function render(){
+ const out=$('results'), filtered=items.filter(passes);
+ $('total').textContent=items.length;$('passed').textContent=filtered.length;$('rejected').textContent=items.length-filtered.length;$('count').textContent=filtered.length?'• '+filtered.length+' đạt':'';
+ out.innerHTML=filtered.length?filtered.map(x=>`<div class="result"><img class="thumb" src="${x.image||'icon.svg'}"><div><div class="title">${esc(x.name)}</div><div class="badges"><span class="badge ok">XTRA ${x.comm}%</span><span class="badge ok">Video ${x.videos}</span></div><div class="link">${esc(x.url||'Chưa có link')}</div><div class="row" style="margin-top:7px"><button class="secondary fit" onclick="copyLink('${String(x.url||'').replace(/'/g,"\\\\'")}')">Copy link</button><button class="danger fit" onclick="removeItem(${x.id})">Xoá</button></div></div></div>`).join(''):'<div class="hint">Chưa có sản phẩm đạt tiêu chí.</div>';
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function removeItem(id){items=items.filter(x=>x.id!==id);save();render()}
+async function copyLink(s){if(!s)return alert('Sản phẩm chưa có link');try{await navigator.clipboard.writeText(s);alert('Đã copy link')}catch(e){prompt('Copy link:',s)}}
+$('ocr').onclick=ocr;$('add').onclick=add;$('minComm').oninput=render;$('maxVideo').onchange=render;
+$('clear').onclick=()=>{if(confirm('Xoá toàn bộ danh sách?')){items=[];save();render()}};
+$('export').onclick=()=>{
+ const rows=[['Tên','Link','XTRA %','Video','Đạt'],...items.map(x=>[x.name,x.url,x.comm,x.videos,passes(x)?'YES':'NO'])];
+ const csv='\\ufeff'+rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='shopee_xtra_filter.csv';a.click();
+};
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
+render();
+</script>
+</body></html>
